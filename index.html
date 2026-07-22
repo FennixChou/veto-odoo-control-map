@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>老賈操控 Odoo 能力總盤點＋替代方案｜VETO 網站建置｜2026-07-22</title>
+<style>
+:root{
+  --bg:#F2ECDF; --surface:#FCFAF4; --surface-2:#F7F1E6;
+  --ink:#22271F; --muted:#62665A; --line:#E4DCCB;
+  --primary:#34573B; --primary-strong:#274430;
+  --primary-soft:rgba(52,87,59,.10); --primary-line:rgba(52,87,59,.30);
+  --clay:#8F6234; --warn:#96611B; --danger:#AF4636;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15170F; --surface:#1E2016; --surface-2:#24271B;
+    --ink:#ECE9DE; --muted:#9D9B88; --line:#2F3123;
+    --primary:#9BC084; --primary-strong:#B4D49E;
+    --primary-soft:rgba(155,192,132,.14); --primary-line:rgba(155,192,132,.38);
+    --clay:#CB9C6E; --warn:#E0AC5B; --danger:#E0806F;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15170F; --surface:#1E2016; --surface-2:#24271B;
+  --ink:#ECE9DE; --muted:#9D9B88; --line:#2F3123;
+  --primary:#9BC084; --primary-strong:#B4D49E;
+  --primary-soft:rgba(155,192,132,.14); --primary-line:rgba(155,192,132,.38);
+  --clay:#CB9C6E; --warn:#E0AC5B; --danger:#E0806F;
+}
+:root[data-theme="light"]{
+  --bg:#F2ECDF; --surface:#FCFAF4; --surface-2:#F7F1E6;
+  --ink:#22271F; --muted:#62665A; --line:#E4DCCB;
+  --primary:#34573B; --primary-strong:#274430;
+  --primary-soft:rgba(52,87,59,.10); --primary-line:rgba(52,87,59,.30);
+  --clay:#8F6234; --warn:#96611B; --danger:#AF4636;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;font-size:16px;line-height:1.75;}
+.wrap{max-width:900px;margin:0 auto;padding:44px 22px;}
+h1{font-size:1.5rem;font-weight:600;line-height:1.4;}
+h2{font-size:1.15rem;font-weight:600;margin:2.4em 0 .8em;color:var(--primary);border-left:4px solid var(--primary);padding-left:.6em;}
+h3{font-size:1rem;font-weight:600;margin:1.6em 0 .5em;}
+p{margin:.7em 0;}
+.sub{color:var(--muted);font-size:.88rem;margin-top:.4em;}
+.pill{display:inline-block;border-radius:999px;padding:.05em .6em;font-size:.72rem;letter-spacing:.02em;}
+.p-auto{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-line);}
+.p-semi{background:transparent;color:var(--warn);border:1px solid var(--warn);}
+.p-man{background:transparent;color:var(--danger);border:1px solid var(--danger);}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:1em 0;}
+.verdict{border-left:4px solid var(--primary);}
+.verdict .big{font-size:1.12rem;font-weight:600;}
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:1em 0;background:var(--surface);}
+table{border-collapse:collapse;width:100%;table-layout:fixed;}
+th{background:var(--surface-2);color:var(--muted);font-size:.74rem;letter-spacing:.03em;text-align:left;padding:9px 10px;}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top;font-size:.85rem;word-break:break-word;overflow-wrap:anywhere;}
+.ok{color:var(--primary);font-weight:600;}
+.part{color:var(--warn);font-weight:600;}
+.no{color:var(--danger);font-weight:600;}
+col.a{width:20%;}col.b{width:12%;}col.c{width:38%;}col.d{width:30%;}
+col.f1{width:26%;}col.f2{width:16%;}col.f3{width:58%;}
+ol,ul{padding-left:1.4em;margin:.7em 0;}
+li{margin:.35em 0;}
+a{color:var(--primary);word-break:break-all;}
+.foot{color:var(--muted);font-size:.86rem;border-top:1px solid var(--line);margin-top:3em;padding-top:1.2em;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:1em 0;}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+.kpi .n{font-size:1.25rem;font-weight:600;}
+.kpi .l{color:var(--muted);font-size:.8rem;}
+.note{font-size:.86rem;color:var(--muted);}
+strong{font-weight:600;}
+code{font-family:Consolas,Menlo,monospace;font-size:.82em;background:var(--primary-soft);padding:1px 4px;border-radius:4px;word-break:break-all;}
+td code{background:transparent;padding:0;color:var(--primary-strong);}
+.legend{font-size:.84rem;color:var(--muted);margin:.5em 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>老賈操控 Odoo 能力總盤點＋不可控項替代方案</h1>
+<p class="sub">參照 <a href="https://fennixchou.github.io/veto-odoo-api-matrix/">API 需求對照矩陣</a>再往前推——Claude Code(老賈)實際能操控什麼、做到什麼程度、碰壁的每一項有什麼替代解｜官方原始碼查證（含 safe_eval 逐行反證）｜2026-07-22（Odoo 18.0 自架 Community）｜如菓工程統籌</p>
+
+<div class="card verdict">
+  <p class="big">一句話回答：<span style="color:var(--primary)">Odoo 幾乎所有「營運與內容」功能老賈都能操控</span>，因為整套系統跑在同一組 API 上、任何公開方法都能遠端呼叫。碰壁的不是「功能」而是三類邊界——<strong>①核心層擋住的私有方法（走公開 wizard 繞）②Odoo 主動通知老賈（要小繞道）③少數必須人工一次性取得的憑證（金流帳密/DNS/SSL）</strong>。每一個都有已查證的可行替代解，沒有死路。</p>
+  <p>操控分三級：<span class="pill p-auto">全自動</span>老賈 API 直接做；<span class="pill p-semi">半自動</span>要走 wizard/自訂小工具/輪詢；<span class="pill p-man">需人工一次</span>取得憑證後老賈接管。VETO 九項需求＋日常營運，落在「全自動」的佔絕大多數。</p>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="n">全自動為主</div><div class="l">營運＋內容層操控</div></div>
+  <div class="kpi"><div class="n">3 類邊界</div><div class="l">私有方法／事件推播／人工憑證</div></div>
+  <div class="kpi"><div class="n">0 死路</div><div class="l">每個缺口都有查證過的替代解</div></div>
+  <div class="kpi"><div class="n">18.0</div><div class="l">原始碼逐行查證（含 safe_eval）</div></div>
+</div>
+
+<h2>1. 老賈可操控功能完整清單（含分級）</h2>
+<p class="legend">分級：<span class="pill p-auto">全自動</span> 老賈用 API 直接執行｜<span class="pill p-semi">半自動</span> 要走 wizard 或自訂小工具｜<span class="pill p-man">需人工一次</span> 取得憑證/簽約後老賈接管。以下為 VETO 會用到的模組，非窮舉——Odoo 40+ 模組全是同一套 API，原則上都可操控。</p>
+<div class="tablebox"><table>
+<colgroup><col class="f1"><col class="f2"><col class="f3"></colgroup>
+<tr><th>功能領域</th><th>分級</th><th>老賈實際能做（模型／方法）</th></tr>
+<tr><td>商品管理</td><td><span class="pill p-auto">全自動</span></td><td>上下架、改價、改文案圖片、變體、分類、SEO、庫存綁定（<code>product.template/product.product</code> CRUD＋is_published）</td></tr>
+<tr><td>B2B 經銷帳號</td><td><span class="pill p-auto">全自動</span></td><td>建經銷公司＋聯絡人、開 portal 登入帳號、指派分級價（<code>res.partner</code>／<code>portal.wizard.user.action_grant_access</code>）</td></tr>
+<tr><td>分級批發價</td><td><span class="pill p-auto">全自動</span></td><td>建價格表、量價階梯、檔期價、指派客戶（<code>product.pricelist.item</code>：min_quantity/fixed_price）</td></tr>
+<tr><td>訂單處理</td><td><span class="pill p-auto">全自動</span></td><td>建單、確認、改單、取消、退款（<code>sale.order.action_confirm</code>）</td></tr>
+<tr><td>賒銷／月結條件</td><td><span class="pill p-auto">全自動</span></td><td>設 Net 30、信用額度、讀即時應收（<code>account.payment.term</code>／<code>res.partner.credit_limit</code>）</td></tr>
+<tr><td>出貨／庫存</td><td><span class="pill p-auto">全自動</span></td><td>建出入庫單、驗收出貨、庫存查詢、跨點調撥（<code>stock.picking.button_validate</code>／<code>stock.quant</code>）</td></tr>
+<tr><td>進貨採購</td><td><span class="pill p-auto">全自動</span></td><td>建採購單、確認、收貨（<code>purchase.order.button_confirm</code>）</td></tr>
+<tr><td>條碼盤點</td><td><span class="pill p-auto">全自動</span></td><td>存原廠 UPC、程式化盤點調整（<code>stock.quant.inventory_quantity</code>＋action_apply_inventory）</td></tr>
+<tr><td>會計過帳</td><td><span class="pill p-auto">全自動</span></td><td>建分錄、發票、過帳、讀總帳（<code>account.move.action_post</code>／account.move.line）</td></tr>
+<tr><td>應收沖帳</td><td><span class="pill p-semi">半自動</span></td><td>登記收款＋自動沖帳（<code>account.payment.register.action_create_payments</code>，帶來源發票 context）——走 wizard 非直呼</td></tr>
+<tr><td>開電子發票</td><td><span class="pill p-semi">半自動</span></td><td>觸發開立送綠界、作廢、折讓（<code>account.move.send.wizard.action_send_and_print</code>）——送出底層方法私有、走公開 wizard</td></tr>
+<tr><td>網站內容</td><td><span class="pill p-auto">全自動</span></td><td>改頁面文案/圖/選單、新增頁面、部落格、SEO meta（<code>ir.ui.view.arch</code>／website.page／website.menu／ir.attachment 全 API 可寫）</td></tr>
+<tr><td>CRM／行銷</td><td><span class="pill p-auto">全自動</span></td><td>商機、客戶分群、Email 行銷、自動化行銷（<code>crm.lead</code>／mailing.mailing 等模型 CRUD）</td></tr>
+<tr><td>報表數據匯出</td><td><span class="pill p-auto">全自動</span></td><td>任意模型 search_read／read_group 撈數據自算（銷售/庫存/帳齡分析）</td></tr>
+<tr><td>退貨／退款</td><td><span class="pill p-auto">全自動</span></td><td>退貨單、貸項通知單（stock return／account.move reversal）</td></tr>
+<tr><td>前台版面設計</td><td><span class="pill p-semi">半自動</span></td><td>LABAVO 品牌主題＝寫 theme module 程式碼＋Git 部署（自架/Odoo.sh 才行，非 API 而是檔案層）</td></tr>
+<tr><td>經銷專屬品項</td><td><span class="pill p-semi">半自動</span></td><td>原生無「按客戶隱藏商品」——老賈用 API 建一條 record rule 解（見 §3）</td></tr>
+<tr><td>月結對帳單</td><td><span class="pill p-semi">半自動</span></td><td>現成報表 Enterprise-only——老賈用 API 撈資料自產 PDF（見 §3）</td></tr>
+</table></div>
+
+<h2>2. 操控的真正邊界（三類，及為什麼）</h2>
+<div class="card">
+<h3>邊界一：私有方法——核心層的鐵牆</h3>
+<p>Odoo 核心（<code>odoo/service/model.py</code> 的 get_public_method，前份已反證）擋下所有底線開頭／@api.private 方法的遠端呼叫。<strong>這是好事</strong>——AI 只能碰官方設計成可對外的公開商業方法（action_confirm/action_post/button_validate 全公開）。遇到私有方法（開發票 _create_invoices、送綠界 _l10n_tw_edi_send）就走它的<strong>公開 wizard 包裝</strong>——每個都有正確入口，寫在 §1 表上。<span class="pill p-semi">半自動</span></p>
+</div>
+<div class="card">
+<h3>邊界二：Odoo 主動通知老賈——要小繞道（本次最深查證）</h3>
+<p>「發生 X 就自動叫老賈」這件事，Odoo 18.0 <strong>沒有原生出站 webhook</strong>，而且反證員逐行確認：<strong>server action 的 Python 沙箱（safe_eval）硬擋 import、context 裡也沒有任何 HTTP 工具</strong>（黑名單封 IMPORT_NAME 位元碼＋dunder 名稱檢查封 __import__，兩條路都死）——所以「server action 直接發 HTTP 打老賈」官方手段做不到。三條替代路，已排序：</p>
+<div class="tablebox"><table>
+<colgroup><col class="a"><col class="b"><col class="c"><col class="d"></colgroup>
+<tr><th>路徑</th><th>可行</th><th>做法</th><th>取捨</th></tr>
+<tr><td><strong>(c) 老賈端輪詢</strong>（預設推薦）</td><td class="ok">✔ 最實際</td><td>老賈排程（工作排程器＋claude -p）定時跑 xmlrpc search_read 抓新單（domain 依 create_date）</td><td><strong>零 Odoo 側程式碼</strong>；有 1–5 分鐘輪詢延遲</td></tr>
+<tr><td>(b) 自訂 module 方法</td><td class="ok">✔ 要即時才用</td><td>自架加一個小 addon 的公開 model 方法（正常 Python 可 import requests 發 HTTP）→ base.automation 綁 create/write 觸發</td><td>真正即時零延遲；維護成本＝一顆 module（自架允許）</td></tr>
+<tr><td>(a) server action 直發 HTTP</td><td class="no">✘ 官方手段不可行</td><td>safe_eval 封死 import 與 HTTP 工具</td><td>唯一未支援側門（__import__ 已載入模組）脆弱且屬安全弱點，NEVER 用</td></tr>
+</table></div>
+<p class="note">結論：VETO 日常事件用 (c) 輪詢就夠（訂單進來 1–5 分鐘內老賈就知道）；要「秒級即時」才升級 (b) 自訂 module。</p>
+</div>
+<div class="card">
+<h3>邊界三：必須人工一次性取得的憑證——之後老賈全接管</h3>
+<p>這類不是「AI 能力不足」，是現實世界要人簽名/驗證的事：<strong>向綠界簽約取得 MerchantID/HashKey、金流商帳密、網域 DNS 設定、SSL 憑證核發、API 金鑰索取</strong>。查證確認：這些憑證一旦拿到，<strong>填入 Odoo（res.config.settings write）、啟用金流商（payment.provider.state 改 enabled，API 可寫）、產對帳單——全部老賈接管</strong>。分界線清楚：取得＝人工一次，之後＝全自動。<span class="pill p-man">需人工一次</span></p>
+</div>
+
+<h2>3. 兩個硬傷的替代解（已查證落地細節）</h2>
+<div class="card">
+<h3>硬傷① 經銷專屬品項可見性</h3>
+<p><strong>最實際解＝老賈用 API 建一條 record rule</strong>（<code>ir.rule</code>）：綁「經銷商」<code>res.groups</code> 群組，用 domain 過濾 product.template——這是 Odoo 原生的權限機制，後台與 portal 都生效，能做到真正「按客戶群隔離商品」。<strong>需要「寫」的只是一條 domain，不是開發整包模組</strong>，且 ir.rule/res.groups 都是常規模型、老賈能直接 API 建立。前台可再疊多網站（B2B 站＋選單 visibility 設「需登入 connected」）做雙保險。<span class="pill p-semi">半自動·一次性設定</span></p>
+<p class="note">為什麼原生不行：eCommerce 商品層沒有「按角色/群組可見性」選項（官方文件確認）；website_id 只能一站或全站、無法按客戶群。所以走 record rule。</p>
+</div>
+<div class="card">
+<h3>硬傷② 月結對帳單／帳齡報表</h3>
+<p>現成報表（Partner Ledger／Aged Receivable／Follow-up）是 Enterprise-only，但<strong>Community 自建完全可行、不需 Enterprise、不需在 Odoo 內寫程式</strong>：反證確認 <code>account.move.line</code> 有對帳單需要的全部欄位（partner_id／date_maturity 到期日／debit／credit／amount_residual 未沖銷餘額／reconciled／move_id）——老賈用 <code>search_read</code>／<code>read_group</code> 撈出來、依 date_maturity 分帳齡桶，在<strong>老賈這端自產對帳單 PDF</strong>（版面完全照 VETO 需求做，比 Enterprise 制式報表更貼）。<span class="pill p-semi">半自動·老賈自建</span></p>
+</div>
+
+<h2>4. VETO 落地行動</h2>
+<ol>
+<li><strong>部署＝自架 Community</strong>（呼應前份報告）：授權費 0、含綠界電子發票模組、API 免費、record rule/theme 全自由。老賈用 API key 經 execute_kw 或自建 MCP 操控。</li>
+<li><strong>事件通知先用輪詢 (c)</strong>：零 Odoo 側程式碼，訂單/收款進來老賈定時抓。日後要秒級即時再加一顆自訂 module (b)。</li>
+<li><strong>硬傷用 record rule＋自建對帳單</strong>解，兩者都是老賈一次性設定/開發，不必買 Enterprise。</li>
+<li><strong>人工項清單交老闆</strong>：綠界簽約取金鑰、網域 DNS、SSL——這幾件你/我協作辦一次，之後系統營運全交老賈。</li>
+<li><strong>一個待確認</strong>：綠界電子發票模組 <code>l10n_tw_edi_ecpay</code> 的授權版別（前份查證指公開 Community 庫，本次補查未能從私有 Enterprise repo 反面確證）——開發店實測時第一件驗。</li>
+</ol>
+
+<h2>5. 查證方法與誠信聲明</h2>
+<ul>
+<li>本報告＝既有 <a href="https://fennixchou.github.io/veto-odoo-api-matrix/">API 需求對照矩陣</a>（7 直接/2 硬傷/私有方法邊界）＋本次兩路替代方案補查（事件驅動、硬傷落地、人工項）綜合。</li>
+<li>最硬核的一條——「server action 不能直發 HTTP」——反證員<strong>逐行核對 safe_eval.py 原始碼</strong>（_BLACKLIST 封 IMPORT_NAME、dunder 名稱檢查封 __import__、eval context 無 HTTP 工具），CONFIRMED；替代路徑 (b)(c) 亦以官方原始碼佐證。</li>
+<li>第二路（硬傷替代）首輪回傳過短被品管防呆攔下，<strong>已重派 opus 補查</strong>——record rule 與 account.move.line 欄位全從官方 18.0 原始碼確認。</li>
+<li>誠實邊界：分級（全自動/半自動/需人工）依「老賈能否純 API 完成」判定；綠界模組授權版別列為唯一待實測項，不假裝已確認。</li>
+</ul>
+
+<div class="foot">
+<p>資料來源：github.com/odoo/odoo 18.0 原始碼（service/model.py／tools/safe_eval.py／ir_actions.py／ir_cron.py／account_move_line.py／payment_provider.py／website_page.py 等逐檔）、odoo.com/documentation（external_api／security record rules／ecommerce／Taiwan localization）、apps.odoo.com——查證日 2026-07-22。方法/欄位名以 Odoo 18.0 為準。「需人工」「待實測」如實標註，NEVER 編造。</p>
+<p>本報告為內部技術決策文件。｜賈維斯｜2026-07-22｜VETO 評估系列第十二份：接續 veto-odoo-api-matrix（需求對照）、veto-odoo-fullsite-ai（三層操控）</p>
+</div>
+
+</div>
+</body>
+</html>
