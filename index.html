@@ -108,16 +108,40 @@ td code{background:transparent;padding:0;color:var(--primary-strong);}
 <tr><td>會計過帳</td><td><span class="pill p-auto">全自動</span></td><td>建分錄、發票、過帳、讀總帳（<code>account.move.action_post</code>／account.move.line）</td></tr>
 <tr><td>應收沖帳</td><td><span class="pill p-semi">半自動</span></td><td>登記收款＋自動沖帳（<code>account.payment.register.action_create_payments</code>，帶來源發票 context）——走 wizard 非直呼</td></tr>
 <tr><td>開電子發票</td><td><span class="pill p-semi">半自動</span></td><td>觸發開立送綠界、作廢、折讓（<code>account.move.send.wizard.action_send_and_print</code>）——送出底層方法私有、走公開 wizard</td></tr>
-<tr><td>網站內容</td><td><span class="pill p-auto">全自動</span></td><td>改頁面文案/圖/選單、新增頁面、部落格、SEO meta（<code>ir.ui.view.arch</code>／website.page／website.menu／ir.attachment 全 API 可寫）</td></tr>
+<tr><td>網站內容<br>（文案/圖/選單）</td><td><span class="pill p-auto">全自動</span></td><td>改頁面文案/圖/選單、新增頁面、部落格、SEO meta（<code>ir.ui.view.arch</code>／website.page／website.menu／ir.attachment 全 API 可寫）——<strong>深度見 §2</strong></td></tr>
+<tr><td>前台版面排版<br>（改現有積木）</td><td><span class="pill p-auto">全自動</span></td><td>改 section 的欄位/間距/顏色/圓角＝改 arch 裡的 Bootstrap class（API write ir.ui.view.arch）——<strong>§2 詳解＋三個雷</strong></td></tr>
+<tr><td>主題色/字體/圓角</td><td><span class="pill p-semi">半自動</span></td><td>設計 tokens 是 SCSS 變數，存成 <code>ir.attachment</code>＋<code>ir.asset</code>，API 可改（見 §2）</td></tr>
 <tr><td>CRM／行銷</td><td><span class="pill p-auto">全自動</span></td><td>商機、客戶分群、Email 行銷、自動化行銷（<code>crm.lead</code>／mailing.mailing 等模型 CRUD）</td></tr>
 <tr><td>報表數據匯出</td><td><span class="pill p-auto">全自動</span></td><td>任意模型 search_read／read_group 撈數據自算（銷售/庫存/帳齡分析）</td></tr>
 <tr><td>退貨／退款</td><td><span class="pill p-auto">全自動</span></td><td>退貨單、貸項通知單（stock return／account.move reversal）</td></tr>
-<tr><td>前台版面設計</td><td><span class="pill p-semi">半自動</span></td><td>LABAVO 品牌主題＝寫 theme module 程式碼＋Git 部署（自架/Odoo.sh 才行，非 API 而是檔案層）</td></tr>
-<tr><td>經銷專屬品項</td><td><span class="pill p-semi">半自動</span></td><td>原生無「按客戶隱藏商品」——老賈用 API 建一條 record rule 解（見 §3）</td></tr>
-<tr><td>月結對帳單</td><td><span class="pill p-semi">半自動</span></td><td>現成報表 Enterprise-only——老賈用 API 撈資料自產 PDF（見 §3）</td></tr>
+<tr><td>LABAVO 品牌主題<br>（整套版型）</td><td><span class="pill p-semi">半自動</span></td><td>整套客製＝寫 theme module／snippet 程式碼＋Git 部署（自架/Odoo.sh，檔案層）——<strong>§2 建議走這條而非狂改 arch</strong></td></tr>
+<tr><td>經銷專屬品項</td><td><span class="pill p-semi">半自動</span></td><td>原生無「按客戶隱藏商品」——老賈用 API 建一條 record rule 解（見 §4）</td></tr>
+<tr><td>月結對帳單</td><td><span class="pill p-semi">半自動</span></td><td>現成報表 Enterprise-only——老賈用 API 撈資料自產 PDF（見 §4）</td></tr>
 </table></div>
 
-<h2>2. 操控的真正邊界（三類，及為什麼）</h2>
+<h2>2. 前台 UI/UX 與版面排版操控深度（老闆追問補查·反向查核過）</h2>
+<p>老闆問「前台網站 UI/UX 與版面設計排版，老賈能不能操控修改運作」——答案是<strong>能，分三個層次，全部經官方原始碼查證</strong>；但「直接改版面資料」有三個實作雷，我反向查核後老實列出，不對你打包票「隨便改都沒事」。</p>
+<h3>三個層次的操控（都可行）</h3>
+<div class="tablebox"><table>
+<colgroup><col class="f1"><col class="f2"><col class="f3"></colgroup>
+<tr><th>層次</th><th>分級</th><th>老賈實際怎麼做（機制查證）</th></tr>
+<tr><td>① 改現有版面/內容</td><td><span class="pill p-auto">全自動</span></td><td>每個拖拉積木在資料層就是 <code>ir.ui.view.arch</code> 裡一段 <code>&lt;section&gt;</code>＋Bootstrap class——改欄寬(col-lg-*)、間距(pt/pb)、顏色(class)、圓角(rounded)＝改這段 HTML 的 class 字串，老賈 API write arch 即可。文字/圖/連結：靜態的直接寫 arch；綁資料的（<code>t-field</code> data-oe-model/field）直接 write 目標欄位（如 blog.post.content）</td></tr>
+<tr><td>② 主題色/字體/圓角</td><td><span class="pill p-semi">半自動</span></td><td>設計 tokens 是 SCSS 變數（5 主題色 <code>o-color-1~5</code>、字體、<code>btn-border-radius</code>）——客製後由 <code>web_editor.assets</code> 存成一筆自訂 SCSS 的 <code>ir.attachment</code>＋一筆 <code>ir.asset</code>(replace)，老賈可 API CRUD 這兩個模型改主題（<strong>反證修正：不是存在 ir.ui.view，是 13+ 版的資產系統</strong>）</td></tr>
+<tr><td>③ 做 LABAVO 自訂積木</td><td><span class="pill p-semi">半自動</span></td><td>把 LABAVO 特殊版型做成可重用積木＝寫 <code>s_</code> 前綴 QWeb 樣板＋註冊進 <code>website.snippets</code> 面板（t-snippet/t-thumbnail），SCSS/JS 隨 module 打包；加前台 JS/CSS 走 <code>ir.asset</code>＋<code>web.assets_frontend</code> bundle——官方教學支援的正規路，自架/Odoo.sh 才能裝</td></tr>
+</table></div>
+<div class="card">
+<h3>⚠️ 反向查核：直接改 arch 的三個雷（防過度承諾）</h3>
+<p>層次①「API write arch 改版面」技術上成立，但反證員從原始碼挖出三個必須知道的陷阱——所以「日常小改（換文案/圖/顏色）用 API 沒問題，但整套品牌版型正規做法是走 §③ 積木/主題程式碼，不是狂改 arch」：</p>
+<ol>
+<li><strong>升級漂移</strong>：任何對 arch 的改動（含 API write）會把該 view 的 <code>arch_updated</code> 設 True——之後模組升級<strong>不再用官方 XML 覆蓋這個 view</strong>：你的客製保留了，但也<strong>再也吃不到官方後續的版面修正</strong>，要回官方版得手動 reset_arch。改越多、升級時要顧的越多。</li>
+<li><strong>COW 陷阱</strong>：改一個「共用版型」時，帶 website_id context＝複製出網站專屬副本再改（不影響別站）；不帶＝<strong>直接改到通用 view、影響全部網站</strong>。老賈 API 直寫要清楚在改哪一份，否則可能動到不該動的。</li>
+<li><strong>編輯器辨識</strong>：拖拉編輯器靠 <code>data-snippet</code>／<code>s_</code> class／<code>data-name</code> 認出「這是積木」。老賈 API 手寫塞進 arch 的 HTML 若缺這些屬性，<strong>回編輯器會辨識不出是積木</strong>（不會弄壞頁面，但失去可視化拖拉編輯）——要保留可編輯性，寫入的 HTML 得沿用官方積木的屬性結構。</li>
+</ol>
+<p class="note" style="margin-bottom:0"><strong>務實結論</strong>：前台 UI/UX 老賈全能操控——日常內容/小版面調整走 API（全自動），品牌級版型/主題走「寫 snippet+主題程式碼 Git 部署」（半自動、避開三個雷、可版控可回滾）。設計定案由你拍板，實作與後續調整交老賈，切得乾淨。</p>
+</div>
+<p class="src">來源：github.com/odoo/odoo 18.0 原始碼（website/views/snippets/s_text_image.xml／web_editor/models/ir_ui_view.py／web_editor/models/assets.py／website/static/src/scss/primary_variables.scss／base/models/ir_qweb_fields.py／website/models/ir_ui_view.py 的 COW 與 arch_updated 邏輯）、官方 Developer Tutorials「Build a website theme」snippet 章、ir.asset/assets bundle 文件——關鍵主張反證：改 arch 改版面 CONFIRMED、主題 token 存 ir.attachment+ir.asset CONFIRMED、「直改 arch 都沒事」REFUTED（三個雷）。</p>
+
+<h2>3. 操控的真正邊界（三類，及為什麼）</h2>
 <div class="card">
 <h3>邊界一：私有方法——核心層的鐵牆</h3>
 <p>Odoo 核心（<code>odoo/service/model.py</code> 的 get_public_method，前份已反證）擋下所有底線開頭／@api.private 方法的遠端呼叫。<strong>這是好事</strong>——AI 只能碰官方設計成可對外的公開商業方法（action_confirm/action_post/button_validate 全公開）。遇到私有方法（開發票 _create_invoices、送綠界 _l10n_tw_edi_send）就走它的<strong>公開 wizard 包裝</strong>——每個都有正確入口，寫在 §1 表上。<span class="pill p-semi">半自動</span></p>
@@ -139,7 +163,7 @@ td code{background:transparent;padding:0;color:var(--primary-strong);}
 <p>這類不是「AI 能力不足」，是現實世界要人簽名/驗證的事：<strong>向綠界簽約取得 MerchantID/HashKey、金流商帳密、網域 DNS 設定、SSL 憑證核發、API 金鑰索取</strong>。查證確認：這些憑證一旦拿到，<strong>填入 Odoo（res.config.settings write）、啟用金流商（payment.provider.state 改 enabled，API 可寫）、產對帳單——全部老賈接管</strong>。分界線清楚：取得＝人工一次，之後＝全自動。<span class="pill p-man">需人工一次</span></p>
 </div>
 
-<h2>3. 兩個硬傷的替代解（已查證落地細節）</h2>
+<h2>4. 兩個硬傷的替代解（已查證落地細節）</h2>
 <div class="card">
 <h3>硬傷① 經銷專屬品項可見性</h3>
 <p><strong>最實際解＝老賈用 API 建一條 record rule</strong>（<code>ir.rule</code>）：綁「經銷商」<code>res.groups</code> 群組，用 domain 過濾 product.template——這是 Odoo 原生的權限機制，後台與 portal 都生效，能做到真正「按客戶群隔離商品」。<strong>需要「寫」的只是一條 domain，不是開發整包模組</strong>，且 ir.rule/res.groups 都是常規模型、老賈能直接 API 建立。前台可再疊多網站（B2B 站＋選單 visibility 設「需登入 connected」）做雙保險。<span class="pill p-semi">半自動·一次性設定</span></p>
@@ -150,7 +174,7 @@ td code{background:transparent;padding:0;color:var(--primary-strong);}
 <p>現成報表（Partner Ledger／Aged Receivable／Follow-up）是 Enterprise-only，但<strong>Community 自建完全可行、不需 Enterprise、不需在 Odoo 內寫程式</strong>：反證確認 <code>account.move.line</code> 有對帳單需要的全部欄位（partner_id／date_maturity 到期日／debit／credit／amount_residual 未沖銷餘額／reconciled／move_id）——老賈用 <code>search_read</code>／<code>read_group</code> 撈出來、依 date_maturity 分帳齡桶，在<strong>老賈這端自產對帳單 PDF</strong>（版面完全照 VETO 需求做，比 Enterprise 制式報表更貼）。<span class="pill p-semi">半自動·老賈自建</span></p>
 </div>
 
-<h2>4. VETO 落地行動</h2>
+<h2>5. VETO 落地行動</h2>
 <ol>
 <li><strong>部署＝自架 Community</strong>（呼應前份報告）：授權費 0、含綠界電子發票模組、API 免費、record rule/theme 全自由。老賈用 API key 經 execute_kw 或自建 MCP 操控。</li>
 <li><strong>事件通知先用輪詢 (c)</strong>：零 Odoo 側程式碼，訂單/收款進來老賈定時抓。日後要秒級即時再加一顆自訂 module (b)。</li>
@@ -159,12 +183,13 @@ td code{background:transparent;padding:0;color:var(--primary-strong);}
 <li><strong>一個待確認</strong>：綠界電子發票模組 <code>l10n_tw_edi_ecpay</code> 的授權版別（前份查證指公開 Community 庫，本次補查未能從私有 Enterprise repo 反面確證）——開發店實測時第一件驗。</li>
 </ol>
 
-<h2>5. 查證方法與誠信聲明</h2>
+<h2>6. 查證方法與誠信聲明</h2>
 <ul>
 <li>本報告＝既有 <a href="https://fennixchou.github.io/veto-odoo-api-matrix/">API 需求對照矩陣</a>（7 直接/2 硬傷/私有方法邊界）＋本次兩路替代方案補查（事件驅動、硬傷落地、人工項）綜合。</li>
 <li>最硬核的一條——「server action 不能直發 HTTP」——反證員<strong>逐行核對 safe_eval.py 原始碼</strong>（_BLACKLIST 封 IMPORT_NAME、dunder 名稱檢查封 __import__、eval context 無 HTTP 工具），CONFIRMED；替代路徑 (b)(c) 亦以官方原始碼佐證。</li>
 <li>第二路（硬傷替代）首輪回傳過短被品管防呆攔下，<strong>已重派 opus 補查</strong>——record rule 與 account.move.line 欄位全從官方 18.0 原始碼確認。</li>
 <li>誠實邊界：分級（全自動/半自動/需人工）依「老賈能否純 API 完成」判定；綠界模組授權版別列為唯一待實測項，不假裝已確認。</li>
+<li><strong>2026-07-23 補：§2 前台 UI/UX 操控深度</strong>（老闆看報告後指出原版只帶一行）——兩路補查、原始碼逐檔查證；反向查核抓到「直改 arch 三個雷」（升級漂移 arch_updated／COW／編輯器辨識），並修正一個假設（主題色存 ir.attachment+ir.asset 非 ir.ui.view）——如實補上，不對前台操控打包票。</li>
 </ul>
 
 <div class="foot">
